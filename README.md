@@ -5,11 +5,11 @@ To make full use of the information in a batch, the losses consider all pairs in
 
 ## Implementation
 
-#### Online Contrastive Loss
+### Online Contrastive Loss
 
 ![](http://latex.codecogs.com/gif.latex?Loss=\\frac{1}{N}\\sum%20_{i,j}%20y_{ij}%20D_{ij}^{2}+(1-y_{ij})\\big[\\alpha-D_{ij}^{2}\\big]_{+})
 
-####  Triplet Loss with Hard Negative Mining Strategy
+###  Triplet Loss with Hard Negative Mining Strategy
 
 ![](http://latex.codecogs.com/gif.latex?Loss=\\frac{1}{N}\\sum\\big[D_{ap}^{2}+\\alpha-D_{an}^{2}\\big]_{+})
 
@@ -25,7 +25,7 @@ To make full use of the information in a batch, the losses consider all pairs in
     
 * No Mining Strategy (Use all valid triplets in a batch)
 
-#### Lifted Structured Feature Embedding
+### Lifted Structured Feature Embedding
 
 ![](https://ws1.sinaimg.cn/large/006tNbRwly1fxvtlzv4nkj30cy023t8m.jpg)
 
