@@ -3,6 +3,8 @@ Pytorch implementation of online metric learning losses.
 
 To make full use of the information in a batch, the losses consider all pairs in a batch by using pure tensor operations.
 
+Requirement: Pytorch 0.4.0 or higher(tested)
+
 ## Implementation
 
 ### Online Contrastive Loss
