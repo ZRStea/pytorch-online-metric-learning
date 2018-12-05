@@ -7,19 +7,19 @@ To make full use of the information in a batch, the losses consider all pairs in
 
 #### Online Contrastive Loss
 
-![](http://latex.codecogs.com/gif.latex?Loss=\\frac{1}{N}\\sum _{i,j} y_{ij} D_{ij}^{2} +(1-y_{ij} )\\big[\\alpha-D_{ij}^{2}\\big]_{+})
+![](http://latex.codecogs.com/gif.latex?Loss=\\frac{1}{N}\\sum%20_{i,j}%20y_{ij}%20D_{ij}^{2}+(1-y_{ij})\\big[\\alpha-D_{ij}^{2}\\big]_{+})
 
 ####  Triplet Loss with Hard Negative Mining Strategy
 
-![](http://latex.codecogs.com/gif.latex?Loss=\\frac{1}{N}\\sum\\big[D_{ap}^{2} + \\alpha-D_{an}^{2}\\big]_{+})
+![](http://latex.codecogs.com/gif.latex?Loss=\\frac{1}{N}\\sum\\big[D_{ap}^{2}+\\alpha-D_{an}^{2}\\big]_{+})
 
 * Hardest Mining Strategy
 
-    ![](http://latex.codecogs.com/gif.latex?D_{an} := argmin(D_{an}^2))
+    ![](http://latex.codecogs.com/gif.latex?D_{an}%20:=%20argmin(D_{an}^2))
 
 * Semi-hard Mining Strategy
 
-    ![](http://latex.codecogs.com/gif.latex?D_{an} := argmin(D_{an}^2)\\quad s.t.\\ D_{an}^2>D_{ap}^2)
+    ![](http://latex.codecogs.com/gif.latex?D_{an}%20:=%20argmin(D_{an}^2)\\quad%20s.t.\\%20D_{an}^2>D_{ap}^2)
 
     ref. [*FaceNet: A Unified Embedding for Face Recognition and Clustering*](https://arxiv.org/abs/1503.03832)
     
