@@ -37,7 +37,7 @@ ref. [*Deep Metric Learning via Lifted Structured Feature Embedding*](https://ar
 
 ### No Fuss Distance Metric Learning using Proxies
 
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fz7j25bkdpj30be01o0sv.jpg)
+![](https://ws2.sinaimg.cn/large/006tNc79ly1fz7j3e9rwnj30b801gwel.jpg)
 
 Proxies loss with static proxy assignment
 
