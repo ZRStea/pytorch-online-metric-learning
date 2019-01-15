@@ -35,6 +35,16 @@ Requirement: Pytorch 0.4.0 or higher(tested)
 
 ref. [*Deep Metric Learning via Lifted Structured Feature Embedding*](https://arxiv.org/abs/1511.06452)
 
+### No Fuss Distance Metric Learning using Proxies
+
+![](https://ws1.sinaimg.cn/large/006tNc79gy1fz7ighfqifj30vo040755.jpg)
+
+Proxies loss with static proxy assignment
+
+ref. [*No Fuss Distance Metric Learning using Proxies*](https://arxiv.org/abs/1703.07464)
+
+
+
 ## Examples
 
 All examples is fine-tuned on Resnet50 pre-trained model.
