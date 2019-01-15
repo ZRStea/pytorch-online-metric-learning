@@ -1,8 +1,10 @@
 import torch
-def pairwise_distance(features,squared=False):
-    square_features = torch.sum(features * features, dim=1)
-    dot_product = torch.mm(features, features.transpose(0, 1))
-    square_dists = square_features.view(-1, 1) - 2 * dot_product + square_features.view(1, -1)
+from torch.autograd import Variable
+def pairwise_distance(features1,features2,squared=False):
+    square_features1 = torch.sum(features1 * features1, dim=1)
+    square_features2 = torch.sum(features2 * features2, dim=1)
+    dot_product = torch.mm(features1, features2.transpose(0, 1))
+    square_dists = square_features1.view(-1, 1) - 2 * dot_product + square_features2.view(1, -1)
     if squared:
         square_dists[square_dists < 0.0] = 0.0
         dist = square_dists
@@ -20,7 +22,7 @@ class ContrastiveLoss(torch.nn.Module):
     def forward(self, features, labels):
         labels = labels.view(-1)
         positive_mask = labels.view(1, -1) == labels.view(-1, 1)
-        square_dists = pairwise_distance(features, squared=True)
+        square_dists = pairwise_distance(features,features, squared=True)
         square_dists = torch.triu(square_dists,1)
         if self.cuda:
             n_dists = torch.max(torch.zeros(square_dists.size()).cuda(), (self.margin - square_dists))
@@ -43,7 +45,7 @@ class TripletLoss(torch.nn.Module):
         batch_size = labels.size()[0]
         positive_mask = labels.view(1, -1) == labels.view(-1, 1)
         negative_mask = ~positive_mask
-        square_dists = pairwise_distance(features, squared=True)
+        square_dists = pairwise_distance(features,features, squared=True)
         if self.mining == 'hardest':
             square_dists_repeated = square_dists.repeat(1, batch_size).view(-1, batch_size)
             all_positive = square_dists.view(-1, 1)
@@ -99,7 +101,7 @@ class LiftedLoss(torch.nn.Module):
         batch_size = labels.size()[0]
         positive_mask = labels.view(1, -1) == labels.view(-1, 1)
         negative_mask = ~positive_mask
-        dists = pairwise_distance(features, squared=False)
+        dists = pairwise_distance(features, features, squared=False)
     #-------------loss--------------------------
         dists_repeated_x = dists.repeat(1,batch_size).view(-1,batch_size)
         negative_mask_repeated_x = negative_mask.repeat(1,batch_size).view(-1,batch_size).float()
@@ -115,3 +117,29 @@ class LiftedLoss(torch.nn.Module):
         lifted_loss_matrix = J_matrix_valid * J_matrix_valid
         lifted_loss = torch.sum(lifted_loss_matrix) / (2 * positive_mask.sum().item())
         return lifted_loss
+
+class ProxyNCA(torch.nn.Module):
+    def __init__(self, embeding_size, classes_num, batchsize, cuda=True):
+        super().__init__()
+        self.cuda = cuda
+        self.embeding_size = embeding_size
+        self.classes_num = classes_num
+        self.batchsize = batchsize
+        self.proxies = Variable(torch.rand(classes_num, embeding_size))
+        if self.cuda:
+            self.proxies = self.proxies.cuda()
+        torch.nn.init.xavier_uniform_(self.proxies)
+        self.proxies_labels = torch.arange(0, self.classes_num).long().view(1,-1)
+        if self.cuda:
+            self.proxies_labels = self.proxies_labels.cuda()
+
+    def forward(self, features, labels):
+        labels_eq = labels.view(-1,1).long() == self.proxies_labels
+        normed_proxies = torch.nn.functional.normalize(self.proxies, dim=1)
+        normed_features = torch.nn.functional.normalize(features, dim=1)
+        square_dists = pairwise_distance(normed_features, normed_proxies, squared=True)
+        p_dists = square_dists[labels_eq].view(-1,1)
+        n_dists = square_dists[~labels_eq].view(self.batchsize, self.classes_num - 1)
+        loss = -torch.log(torch.exp(-p_dists) / torch.sum(torch.exp(-n_dists), dim=1, keepdim=True))
+        loss = torch.mean(loss)
+        return loss
